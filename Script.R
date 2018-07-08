@@ -77,10 +77,12 @@ watchlist <- list(train_m=dtrain)
 param <- list(  objective           = "reg:linear", 
                 booster             = "gbtree",
                 eval_metric         = "rmse",
-                eta                 = 0.0202048,
-                max_depth           = 5,
-                subsample           = 0.6815,
-                colsample_bytree    = 0.701
+                eta                 = 0.1,
+                max_depth           = 3,
+                subsample           = 0.7,
+                colsample_bytree    = 0.7,
+                lambda = 0.5,
+                alpha = 0.5
 )
 
 clf <- xgb.train(   params              = param, 
@@ -97,6 +99,8 @@ test$TARGET <- -1
 test_m <- sparse.model.matrix(TARGET ~ ., data = test)
 
 preds <- predict(clf, test_m)
-submission <- data.frame(ID=test.id, TARGET=preds)
+submission <- data.frame(ID=test.id, TARGET=expm1(preds))
 
+scat("saving the submission file\n")
+write.csv(submission, "submission.csv", row.names = F)
 
