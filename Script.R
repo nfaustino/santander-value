@@ -9,7 +9,8 @@ packages <- c(
   "glmnet",
   "pROC",
   "caret",
-  "xgboost"
+  "xgboost",
+  "readr"
   
 )
 
@@ -22,3 +23,10 @@ ipak <- function(pkg){
 
 # Warning this will install the packages you don't have
 ipak(packages)
+
+
+#tr <- fread("input/train.csv", drop = "ID", header = T, showProgress = F)
+#te <- fread("input/test.csv", drop = "ID", header = T, showProgress = F)
+train <- readr::read_csv("input/train.csv")
+test  <- readr::read_csv("input/test.csv")
+                                                                                                                     
