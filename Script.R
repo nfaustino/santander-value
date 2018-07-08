@@ -71,7 +71,7 @@ train$TARGET <- train.y
 
 train_m <- sparse.model.matrix(TARGET ~ ., data = data.frame(train))
 
-dtrain <- xgb.DMatrix(data=train_m, label=train.y)
+dtrain <- xgb.DMatrix(data=train_m, label=log1p(train.y))
 watchlist <- list(train_m=dtrain)
 
 param <- list(  objective           = "reg:linear", 
