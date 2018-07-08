@@ -27,8 +27,8 @@ ipak(packages)
 # Fread is crashing with test.csv
 #tr <- fread("input/train.csv", drop = "ID", header = T, showProgress = F)
 #te <- fread("input/test.csv", header = T, showProgress = T, collapse="\n")
-train <- readr::read_csv("input/train.csv")
-test  <- readr::read_csv("input/test.csv")
+train <- data.frame(readr::read_csv("input/train.csv"))
+test  <- data.frame(readr::read_csv("input/test.csv"))
 
 # Removing ID
 train$ID <- NULL
@@ -74,9 +74,9 @@ train_m <- sparse.model.matrix(TARGET ~ ., data = data.frame(train))
 dtrain <- xgb.DMatrix(data=train_m, label=train.y)
 watchlist <- list(train_m=dtrain)
 
-param <- list(  objective           = "binary:logistic", 
+param <- list(  objective           = "reg:linear", 
                 booster             = "gbtree",
-                eval_metric         = "auc",
+                eval_metric         = "rmse",
                 eta                 = 0.0202048,
                 max_depth           = 5,
                 subsample           = 0.6815,
@@ -97,17 +97,6 @@ test$TARGET <- -1
 test_m <- sparse.model.matrix(TARGET ~ ., data = test)
 
 preds <- predict(clf, test_m)
-submission_xgb <- data.frame(ID=test.id, TARGET=preds)
+submission <- data.frame(ID=test.id, TARGET=preds)
 
-xgbpred <- predict(clf,train_m)
-roccurve_xgb <- roc(train$TARGET~xgbpred)
-
-## optimal cut-off point 
-cutoff_xgb <- roccurve_xgb$thresholds[which.max(roccurve_xgb$sensitivities + roccurve_xgb$specificities)]
-
-xgbpred <- data.frame(xgbpred)
-xgbpred$pred[xgbpred$xgbpred>cutoff_xgb]  <- 1
-xgbpred$pred[xgbpred$xgbpred<=cutoff_xgb] <- 0
-
-plot(roccurve_xgb)
 
