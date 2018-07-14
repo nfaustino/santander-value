@@ -102,5 +102,5 @@ preds <- predict(clf, test_m)
 submission <- data.frame(ID=test.id, TARGET=expm1(preds))
 
 scat("saving the submission file\n")
-write.csv(submission, "submission.csv", row.names = F)
+write.csv(submission, "output/submission-2.csv", row.names = F)
 
